@@ -2,7 +2,7 @@ version: '3.5'
 
 services:
   clickhouse:
-    image: clickhouse/clickhouse-server:23.12
+    image: clickhouse/clickhouse-server:24.8
     user: '101:101'
     container_name: clickhouse-server
     hostname: clickhouse-server

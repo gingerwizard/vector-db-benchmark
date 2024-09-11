@@ -317,5 +317,5 @@
       "batch_size": 5000,
       "use_simple_projections": true
     }
-  },
+  }
 ]
