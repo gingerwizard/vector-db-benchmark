@@ -318,42 +318,4 @@
       "use_simple_projections": true
     }
   },
-  {
-    "name": "clickhouse-annoy",
-    "engine": "clickhouse",
-    "connection_params": {
-      "send_receive_timeout": 3000
-    },
-    "collection_params": {
-      "index": {
-        "type": "annoy"
-      }
-    },
-    "search_params": [
-      {
-        "parallel": 1,
-        "max_threads": 8
-      },
-      {
-        "parallel": 2,
-        "max_threads": 8
-      },
-      {
-        "parallel": 4,
-        "max_threads": 8
-      },
-      {
-        "parallel": 8,
-        "max_threads": 1
-      },
-      {
-        "parallel": 100,
-        "max_threads": 1
-      }
-    ],
-    "upload_params": {
-      "parallel": 4,
-      "batch_size": 5000
-    }
-  }
 ]

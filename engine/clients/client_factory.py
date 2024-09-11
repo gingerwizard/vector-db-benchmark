@@ -39,7 +39,7 @@ ENGINE_CONFIGURATORS = {
     "elasticsearch": ElasticConfigurator,
     "opensearch": OpenSearchConfigurator,
     "redis": RedisConfigurator,
-    "clickhouse": ClickHouseConfigurator
+    "clickhouse": ClickHouseConfigurator,
     "pgvector": PgVectorConfigurator,
 }
 
@@ -50,7 +50,7 @@ ENGINE_UPLOADERS = {
     "elasticsearch": ElasticUploader,
     "opensearch": OpenSearchUploader,
     "redis": RedisUploader,
-    "clickhouse": ClickHouseUploader
+    "clickhouse": ClickHouseUploader,
     "pgvector": PgVectorUploader,
 }
 
@@ -61,7 +61,7 @@ ENGINE_SEARCHERS = {
     "elasticsearch": ElasticSearcher,
     "opensearch": OpenSearchSearcher,
     "redis": RedisSearcher,
-    "clickhouse": ClickHouseSearcher
+    "clickhouse": ClickHouseSearcher,
     "pgvector": PgVectorSearcher,
 }
 

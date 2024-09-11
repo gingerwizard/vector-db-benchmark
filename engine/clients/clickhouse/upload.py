@@ -6,6 +6,7 @@ import clickhouse_connect
 from clickhouse_connect.driver import Client
 from clickhouse_connect.driver.models import ColumnDef
 
+from dataset_reader.base_reader import Record
 from engine.base_client.upload import BaseUploader
 from engine.clients.clickhouse.config import (
     CLICKHOUSE_TABLE,
@@ -49,20 +50,16 @@ class ClickHouseUploader(BaseUploader):
         cls.vector_length = 0
 
     @classmethod
-    def upload_batch(
-            cls, ids: List[int], vectors: List[list], metadata: Optional[List[dict]]
-    ):
+    def upload_batch(cls, batch: List[Record]):
         data = []
-        if metadata is None:
-            metadata = [{}] * len(vectors)
         # we assume all rows have all columns
-        for idx, vector, payload in zip(ids, vectors, metadata):
-            if idx == 0:
-                cls.vector_length = len(vector)
-            row = [idx, vector]
-            if payload:
+        for record in batch:
+            if record.id == 0:
+                cls.vector_length = len(record.vector)
+            row = [record.id, record.vector]
+            if record.metadata:
                 for column_name in cls.column_names:
-                    row.append(payload[column_name])
+                    row.append(record.metadata.get(column_name))
             data.append(row)
         cls.client.insert(CLICKHOUSE_TABLE, data=data, column_names=cls.column_names, column_types=cls.column_types)
 
