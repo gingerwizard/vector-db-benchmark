@@ -27,7 +27,7 @@ for path in DATA_DIR.glob("*.json"):
 
     entry = [stats["test_name"], match["engine_name"], 0 if match["m"] is None else int(match["m"]),
              0 if match["ef"] is None else int(match["ef"]),
-             stats["dataset_name"], stats["search_id"] if "search_id" in stats else 0, stats["timestamp"],
+             stats["params"]["dataset"], stats["search_id"] if "search_id" in stats else 0, stats["timestamp"],
              stats["params"], stats["results"]]
     if stats["operation"] == "search":
         search_results.append(entry)
@@ -44,7 +44,7 @@ upload_df = upload_df.sort_values("date", ascending=False) \
     .last()
 upload_df = pd.concat([upload_df, upload_df["results"].apply(pd.Series)], axis=1)
 upload_df["total_upload_time"] = upload_df["total_time"]
-upload_df = upload_df.drop(columns=["results", "latencies", "search_index", "engine", "ef", "m"])
+upload_df = upload_df.drop(columns=["results", "search_index", "engine", "ef", "m"])
 
 search_df = pd.DataFrame(search_results, columns=column_names)
 search_df["date"] = pd.to_datetime(search_df["date"], format="%Y-%m-%d-%H-%M-%S")

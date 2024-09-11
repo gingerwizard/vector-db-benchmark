@@ -12,7 +12,7 @@ from engine.base_client.upload import BaseUploader
 RESULTS_DIR = ROOT_DIR / "results"
 RESULTS_DIR.mkdir(exist_ok=True)
 
-DETAILED_RESULTS = bool(int(os.getenv("DETAILED_RESULTS", False)))
+DETAILED_RESULTS = bool(int(os.getenv("DETAILED_RESULTS", True)))
 
 
 class BaseClient:
