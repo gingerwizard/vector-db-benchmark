@@ -74,10 +74,10 @@ class ElasticConfigurator(BaseConfigurator):
                         "dims": dataset.config.vector_size,
                         "index": index,
                         "similarity": self.DISTANCE_MAPPING[dataset.config.distance],
-                        "index_options": {
+                        **({"index_options": {
                             "type": "hnsw",
                             **collection_params["index_options"],
-                        },
+                        }} if index else {}),
                     },
                     **self._prepare_fields_config(dataset),
                 },
