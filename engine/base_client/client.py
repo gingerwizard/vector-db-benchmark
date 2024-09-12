@@ -12,7 +12,7 @@ from engine.base_client.upload import BaseUploader
 RESULTS_DIR = ROOT_DIR / "results"
 RESULTS_DIR.mkdir(exist_ok=True)
 
-DETAILED_RESULTS = bool(int(os.getenv("DETAILED_RESULTS", True)))
+DETAILED_RESULTS = bool(int(os.getenv("DETAILED_RESULTS", False)))
 
 
 class BaseClient:
@@ -35,7 +35,7 @@ class BaseClient:
         return self.configurator.SPARSE_VECTOR_SUPPORT
 
     def save_search_results(
-            self, dataset_name: str, results: dict, search_id: int, search_params: dict
+        self, dataset_name: str, results: dict, search_id: int, search_params: dict
     ):
         now = datetime.now()
         timestamp = now.strftime("%Y-%m-%d-%H-%M-%S")
@@ -47,8 +47,6 @@ class BaseClient:
             out.write(
                 json.dumps(
                     {
-                        "test_name": self.name,
-                        "operation": "search",
                         "params": {
                             "dataset": dataset_name,
                             "experiment": self.name,
@@ -56,25 +54,20 @@ class BaseClient:
                             **search_params,
                         },
                         "results": results,
-                        "timestamp": timestamp,
-                        "search_id": search_id,
-                    }
+                    },
+                    indent=2,
                 )
             )
         return result_path
 
     def save_upload_results(
-            self, dataset_name: str, results: dict, upload_params: dict
+        self, dataset_name: str, results: dict, upload_params: dict
     ):
         now = datetime.now()
         timestamp = now.strftime("%Y-%m-%d-%H-%M-%S")
         experiments_file = f"{self.name}-{dataset_name}-upload-{timestamp}.json"
         with open(RESULTS_DIR / experiments_file, "w") as out:
             upload_stats = {
-
-                "test_name": self.name,
-                "operation": "upload",
-                "timestamp": timestamp,
                 "params": {
                     "experiment": self.name,
                     "engine": self.engine,
@@ -86,11 +79,11 @@ class BaseClient:
             out.write(json.dumps(upload_stats, indent=2))
 
     def run_experiment(
-            self,
-            dataset: Dataset,
-            skip_upload: bool = False,
-            skip_search: bool = False,
-            skip_if_exists: bool = True,
+        self,
+        dataset: Dataset,
+        skip_upload: bool = False,
+        skip_search: bool = False,
+        skip_if_exists: bool = True,
     ):
         execution_params = self.configurator.execution_params(
             distance=dataset.config.distance, vector_size=dataset.config.vector_size
