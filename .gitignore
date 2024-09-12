@@ -7,3 +7,4 @@ NOTES.md
 results/*
 tools/custom/data.json
 temp/*
+experiments/configurations/**

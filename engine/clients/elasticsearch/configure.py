@@ -73,7 +73,7 @@ class ElasticConfigurator(BaseConfigurator):
                         "type": "dense_vector",
                         "dims": dataset.config.vector_size,
                         "index": index,
-                        "similarity": self.DISTANCE_MAPPING[dataset.config.distance],
+                        **({"similarity": self.DISTANCE_MAPPING[dataset.config.distance]} if index else {}),
                         **({"index_options": {
                             "type": "hnsw",
                             **collection_params["index_options"],
