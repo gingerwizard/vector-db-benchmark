@@ -46,17 +46,6 @@ class ElasticConfigurator(BaseConfigurator):
             "index": index,
         }
 
-        if index:
-            vector_mapping["similarity"] = self.DISTANCE_MAPPING[dataset.config.distance]
-            vector_mapping["index_options"] = {
-                **{
-                    "type": "hnsw",
-                    "m": 16,
-                    "ef_construction": 100,
-                },
-                **collection_params.get("index_options"),
-            }
-
         self.client.indices.create(
             index=ELASTIC_INDEX,
             settings={

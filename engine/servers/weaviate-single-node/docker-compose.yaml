@@ -8,7 +8,9 @@ services:
     - '8090'
     - --scheme
     - http
-    image: cr.weaviate.io/semitechnologies/weaviate:1.25.1
+    image: cr.weaviate.io/semitechnologies/weaviate:1.25.16
+    volumes:
+      - ./data/weaviate:/var/lib/weaviate/data
     ports:
       - "8090:8090"
       - "50051:50051"
@@ -20,7 +22,7 @@ services:
     environment:
       QUERY_DEFAULTS_LIMIT: 10
       AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
-      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate/data'
       DEFAULT_VECTORIZER_MODULE: 'none'
       ENABLE_MODULES: ''
       CLUSTER_HOSTNAME: 'node1'
