@@ -14,18 +14,19 @@ services:
     ports:
       - "8090:8090"
       - "50051:50051"
+      - "2112:2112"
     logging:
       driver: "json-file"
       options:
         max-file: "1"
         max-size: "10m"
     environment:
-      QUERY_DEFAULTS_LIMIT: 10
+      QUERY_DEFAULTS_LIMIT: 25
       AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
       PERSISTENCE_DATA_PATH: '/var/lib/weaviate/data'
       DEFAULT_VECTORIZER_MODULE: 'none'
       ENABLE_MODULES: ''
-      CLUSTER_HOSTNAME: 'node1'
+      CLUSTER_HOSTNAME: 'benchmark_node'
       GOMEMLIMIT: 25GiB # https://weaviate.io/blog/gomemlimit-a-game-changer-for-high-memory-applications
     deploy:
       resources:
