@@ -8,7 +8,7 @@ services:
     - '8090'
     - --scheme
     - http
-    image: cr.weaviate.io/semitechnologies/weaviate:1.25.16
+    image: cr.weaviate.io/semitechnologies/weaviate:1.26.4
     volumes:
       - ./data/weaviate:/var/lib/weaviate/data
     ports:
