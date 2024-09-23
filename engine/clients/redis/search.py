@@ -73,10 +73,11 @@ class RedisSearcher(BaseSearcher):
             .dialect(4)
             .timeout(REDIS_QUERY_TIMEOUT)
         )
+        config = cls.search_params["config"] if "config" in cls.search_params else {}
         params_dict = {
             "vec_param": np.array(query.vector).astype(np.float32).tobytes(),
             "K": top,
-            **cls.search_params["config"],
+            **config,
             **params,
         }
         results = cls.search_namespace.search(q, query_params=params_dict)
