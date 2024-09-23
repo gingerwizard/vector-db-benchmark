@@ -11,7 +11,7 @@ services:
         max-file: 1
         max-size: 10m
     volumes:
-      - ./data:/data
+      - ./data/redis:/data
     deploy:
       resources:
         limits:
