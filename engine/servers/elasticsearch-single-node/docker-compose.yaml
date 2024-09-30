@@ -34,7 +34,7 @@ services:
       options:
         max-file: 1
         max-size: 10m
-        
+
   kibana:
      depends_on:
        es:
