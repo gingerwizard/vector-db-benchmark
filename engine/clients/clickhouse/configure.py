@@ -55,9 +55,7 @@ class ClickHouseConfigurator(BaseConfigurator):
         if not self.engine == "Memory":
             order_by = "ORDER BY tuple()"
         if self.index_type.lower() == "hnsw":
-            columns.append(f"INDEX hnsw_indx vector TYPE usearch('{DISTANCE_MAPPING[dataset.config.distance]}', 'f32')")
-        elif self.index_type.lower() == "annoy":
-            columns.append(f"INDEX annoy_indx vector TYPE annoy('{DISTANCE_MAPPING[dataset.config.distance]}')")
+            columns.append(f"INDEX hnsw_indx vector TYPE vector_similarity('hnsw','{DISTANCE_MAPPING[dataset.config.distance]}', 'f32')")
 
         settings = ""
         if self.settings:
