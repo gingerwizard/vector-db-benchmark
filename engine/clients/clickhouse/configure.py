@@ -24,8 +24,7 @@ class ClickHouseConfigurator(BaseConfigurator):
         super().__init__(host, collection_params, connection_params)
         self.client = clickhouse_connect.get_client(host=host, username=CLICKHOUSE_USER, password=CLICKHOUSE_PASSWORD,
                                                     database=CLICKHOUSE_DATABASE, port=CLICKHOUSE_PORT,
-                                                    settings={"allow_experimental_usearch_index": "1",
-                                                              "allow_experimental_annoy_index": "1"},
+                                                    settings={"allow_experimental_vector_similarity_index": "1"},
                                                     **connection_params)
         self.engine = collection_params["engine"] if "engine" in collection_params else "MergeTree"
         self.index_type = "exact"
