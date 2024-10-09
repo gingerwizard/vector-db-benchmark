@@ -94,3 +94,7 @@ class ClickHouseSearcher(BaseSearcher):
             (row[0], row[1])
             for row in response.result_rows
         ]
+
+    @classmethod
+    def delete_client(cls):
+        cls.client.close()

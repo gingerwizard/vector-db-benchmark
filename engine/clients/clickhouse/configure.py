@@ -87,3 +87,6 @@ class ClickHouseConfigurator(BaseConfigurator):
         for field_name, field_type in dataset.config.schema.items():
             columns.append(f"{field_name} {self.DTYPE_MAPPING.get(field_type, field_type)}")
         return columns
+
+    def delete_client(self):
+        self.client.close()

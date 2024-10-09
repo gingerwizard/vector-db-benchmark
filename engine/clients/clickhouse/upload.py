@@ -114,3 +114,7 @@ class ClickHouseUploader(BaseUploader):
                                        arraySum((normal, offset, bit) -> bitShiftLeft(toUInt128(dotProduct(vector - offset, normal) > 0), bit), normals, offsets, range(num_bits)) AS bits
                                     FROM {CLICKHOUSE_TABLE}""", settings={"max_block_size": 1000})
         return {}
+
+    @classmethod
+    def delete_client(cls):
+        cls.client.close()
