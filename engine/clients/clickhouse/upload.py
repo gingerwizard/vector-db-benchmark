@@ -1,8 +1,9 @@
 import multiprocessing as mp
-import uuid
-from typing import List, Optional
+from typing import List
 
 import clickhouse_connect
+from clickhouse_connect import common
+
 from clickhouse_connect.driver import Client
 from clickhouse_connect.driver.models import ColumnDef
 
@@ -16,6 +17,7 @@ from engine.clients.clickhouse.config import (
     CLICKHOUSE_DATABASE
 )
 
+common.set_setting('autogenerate_session_id', False)
 
 class ClosableClickHouse(Client):
     def __del__(self):

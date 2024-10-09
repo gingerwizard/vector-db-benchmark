@@ -3,6 +3,7 @@ from typing import List, Tuple
 
 import clickhouse_connect
 from clickhouse_connect.driver import Client
+from clickhouse_connect import common
 
 from dataset_reader.base_reader import Query
 from engine.base_client.search import BaseSearcher
@@ -13,6 +14,8 @@ from engine.clients.clickhouse.config import (
     CLICKHOUSE_USER, DISTANCE_MAPPING, CLICKHOUSE_DATABASE,
 )
 from engine.clients.clickhouse.parser import ClickHouseConditionParser
+
+common.set_setting('autogenerate_session_id', False)
 
 
 class ClosableClickHouse(Client):

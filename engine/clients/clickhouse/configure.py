@@ -9,6 +9,9 @@ from engine.clients.clickhouse.config import (
     CLICKHOUSE_PORT,
     CLICKHOUSE_PASSWORD, CLICKHOUSE_DATABASE, DISTANCE_MAPPING,
 )
+from clickhouse_connect import common
+
+common.set_setting('autogenerate_session_id', False)
 
 
 class ClickHouseConfigurator(BaseConfigurator):
@@ -54,7 +57,8 @@ class ClickHouseConfigurator(BaseConfigurator):
         if not self.engine == "Memory":
             order_by = "ORDER BY tuple()"
         if self.index_type.lower() == "hnsw":
-            columns.append(f"INDEX hnsw_indx vector TYPE vector_similarity('hnsw','{DISTANCE_MAPPING[dataset.config.distance]}')")
+            columns.append(
+                f"INDEX hnsw_indx vector TYPE vector_similarity('hnsw','{DISTANCE_MAPPING[dataset.config.distance]}')")
 
         settings = ""
         if self.settings:
