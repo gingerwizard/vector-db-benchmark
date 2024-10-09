@@ -1,5 +1,4 @@
 import multiprocessing as mp
-import uuid
 from typing import List, Tuple
 
 import clickhouse_connect
@@ -35,6 +34,7 @@ class ClickHouseSearcher(BaseSearcher):
     def init_client(cls, host, distance, connection_params: dict, search_params: dict):
         cls.client: Client = clickhouse_connect.get_client(host=host, username=CLICKHOUSE_USER,
                                                            password=CLICKHOUSE_PASSWORD, database=CLICKHOUSE_DATABASE,
+                                                           settings={"enable_analyzer": "0"},
                                                            port=CLICKHOUSE_PORT, **connection_params)
         cls.search_params = search_params
         cls.distance = DISTANCE_MAPPING[distance]
@@ -86,8 +86,9 @@ class ClickHouseSearcher(BaseSearcher):
             LIMIT {top}
             """
         else:
-            statement = (f"SELECT id, {cls.distance}(vector, {query.vector}::Array(Float32)) as score FROM {CLICKHOUSE_TABLE} "
-                         f"WHERE {where_condition} ORDER BY score ASC LIMIT {top}")
+            statement = (
+                f"WITH {query.vector} as reference_vector SELECT id, {cls.distance}(vector, reference_vector) as score FROM {CLICKHOUSE_TABLE} "
+                f"WHERE {where_condition} ORDER BY score ASC LIMIT {top}")
         response = cls.client.query(statement, settings={k: v for k, v in cls.search_params.items() if k != 'parallel'})
         return [
             (row[0], row[1])

@@ -27,15 +27,17 @@ class ClickHouseUploader(BaseUploader):
     upload_params = {}
     column_names = []
     column_types = []
+
     @classmethod
     def get_mp_start_method(cls):
         return "forkserver" if "forkserver" in mp.get_all_start_methods() else "spawn"
 
     @classmethod
     def init_client(cls, host, distance, connection_params, upload_params):
+        settings = upload_params["index"] if "index" in upload_params else {}
         cls.client: Client = clickhouse_connect.get_client(host=host, username=CLICKHOUSE_USER,
                                                            password=CLICKHOUSE_PASSWORD, database=CLICKHOUSE_DATABASE,
-                                                           port=CLICKHOUSE_PORT,
+                                                           port=CLICKHOUSE_PORT, settings=settings,
                                                            **connection_params)
         cls.upload_params = upload_params
         describe_result = cls.client.query(f'DESCRIBE TABLE {CLICKHOUSE_TABLE}')
@@ -65,7 +67,8 @@ class ClickHouseUploader(BaseUploader):
 
     @classmethod
     def post_upload(cls, _distance):
-        response = cls.client.query(f"SELECT engine FROM system.tables WHERE name='{CLICKHOUSE_TABLE}' AND database='{CLICKHOUSE_DATABASE}'")
+        response = cls.client.query(
+            f"SELECT engine FROM system.tables WHERE name='{CLICKHOUSE_TABLE}' AND database='{CLICKHOUSE_DATABASE}'")
         if response.first_row[0] != 'Memory':
             cls.client.command(f"OPTIMIZE TABLE {CLICKHOUSE_TABLE} FINAL", settings={"alter_sync": 2})
         response = cls.client.query(
