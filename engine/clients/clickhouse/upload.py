@@ -1,4 +1,5 @@
 import multiprocessing as mp
+import time
 from typing import List
 
 import clickhouse_connect
@@ -18,6 +19,7 @@ from engine.clients.clickhouse.config import (
 )
 
 common.set_setting('autogenerate_session_id', False)
+
 
 class ClosableClickHouse(Client):
     def __del__(self):
@@ -68,11 +70,32 @@ class ClickHouseUploader(BaseUploader):
         cls.client.insert(CLICKHOUSE_TABLE, data=data, column_names=cls.column_names, column_types=cls.column_types)
 
     @classmethod
+    def num_merges(cls):
+        response = cls.client.query(
+            f"SELECT count() FROM system.merges WHERE table='{CLICKHOUSE_TABLE}' AND database='{CLICKHOUSE_DATABASE}'")
+        return int(response.first_row[0])
+
+    @classmethod
+    def num_parts(cls):
+        response = cls.client.query(
+            f"SELECT count() FROM system.parts WHERE table='{CLICKHOUSE_TABLE}' AND database='{CLICKHOUSE_DATABASE}' AND active")
+        return int(response.first_row[0])
+
+    @classmethod
+    def optimize(cls):
+        cls.client.command(f"OPTIMIZE TABLE {CLICKHOUSE_TABLE} FINAL",
+                           settings={"alter_sync": 2})
+        while cls.num_merges() > 0:
+            time.sleep(1)
+        if cls.num_parts() > 1:
+            cls.optimize()
+
+    @classmethod
     def post_upload(cls, _distance):
         response = cls.client.query(
             f"SELECT engine FROM system.tables WHERE name='{CLICKHOUSE_TABLE}' AND database='{CLICKHOUSE_DATABASE}'")
         if response.first_row[0] != 'Memory':
-            cls.client.command(f"OPTIMIZE TABLE {CLICKHOUSE_TABLE} FINAL", settings={"alter_sync": 2})
+            cls.optimize()
         response = cls.client.query(
             f"SELECT count() FROM system.tables WHERE name='{CLICKHOUSE_TABLE}_lsh' OR name='{CLICKHOUSE_TABLE}_planes' "
             f"AND database='{CLICKHOUSE_DATABASE}'")
