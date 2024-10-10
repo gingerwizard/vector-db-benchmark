@@ -11,11 +11,13 @@ services:
       - POSTGRES_HOST_AUTH_METHOD=trust
     # shared_buffers should be 25% of memory
     # maintenance_work_mem should be ~65%
-    command: postgres -c shared_buffers=8GB -c maintenance_work_mem=21GB -c max_connections=200
+    command: postgres -c shared_buffers=8GB -c maintenance_work_mem=21GB -c max_connections=200 -c max_wal_size=20GB
     # shm_size should be shared_buffers + maintenance_work_mem
     shm_size: 29g
     ports:
       - 5432:5432
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
     logging:
       driver: "json-file"
       options:
