@@ -57,9 +57,11 @@ class ClickHouseConfigurator(BaseConfigurator):
         if not self.engine == "Memory":
             order_by = "ORDER BY tuple()"
         if self.index_type.lower() == "hnsw":
-            columns.append(
-                f"INDEX hnsw_indx vector TYPE vector_similarity('hnsw','{DISTANCE_MAPPING[dataset.config.distance]}')")
-
+            quantization = self.index_params["quantization"] if "quantization" in self.index_params else "bf16"
+            m = self.index_params["m"] if "m" in self.index_params else 16
+            ef_construction = self.index_params["ef_construction"] if "ef_construction" in self.index_params else 128
+            ef_search = self.index_params["ef_search"] if "ef_search" in self.index_params else 64
+            columns.append(f"INDEX hnsw_indx vector TYPE vector_similarity('hnsw','{DISTANCE_MAPPING[dataset.config.distance]}', '{quantization}', {m}, {ef_construction}, {ef_search})")
         settings = ""
         if self.settings:
             settings = f"SETTINGS {', '.join([f'{key}={value}' for key, value in self.settings.items()])}"
